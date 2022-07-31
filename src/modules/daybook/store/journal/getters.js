@@ -17,3 +17,5 @@ export const getEntryById = (state) => (id) => {
   if (!entry) return;
   return { ...entry };
 };
+
+export const getLoading = (state) => state.isLoading;
