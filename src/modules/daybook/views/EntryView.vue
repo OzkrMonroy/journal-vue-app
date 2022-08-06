@@ -7,6 +7,13 @@
         <span class="mx-2 fs-4 fw-light">{{ year }}</span>
       </div>
       <div>
+        <input
+          type="file"
+          @change="onSelectedImage"
+          ref="selectImage"
+          hidden
+          accept="image/png, image/jpeg, image/jpg"
+        />
         <button
           class="btn btn-danger mx-2"
           @click="onDeleteEntry"
@@ -15,7 +22,7 @@
           Delete
           <i class="fa fa-trash-alt"></i>
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" @click="onSelectImage">
           Upload photo
           <i class="fa fa-upload"></i>
         </button>
@@ -29,7 +36,14 @@
       ></textarea>
     </div>
     <img
-      src="https://estaticos.muyinteresante.es/uploads/images/gallery/5e723bc25cafe8a3f89605a5/flores_0.jpg"
+      v-if="entry.picture && !localImage"
+      :src="entry.picture"
+      alt="entry-picture"
+      class="img-thumbnail"
+    />
+    <img
+      v-if="localImage"
+      :src="localImage"
       alt="entry-picture"
       class="img-thumbnail"
     />
@@ -40,8 +54,9 @@
 <script>
 import { defineAsyncComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
-import { getFormattedDate } from "../helpers/getFormattedDate";
 import Swal from "sweetalert2";
+import { getFormattedDate } from "../helpers/getFormattedDate";
+import uploadImage from "../helpers/uploadImage";
 
 export default {
   props: {
@@ -58,6 +73,8 @@ export default {
   methods: {
     ...mapActions("journal", ["updateEntry", "createEntry", "deleteEntry"]),
     getEntry() {
+      this.file = null;
+      this.localImage = null;
       let entry;
       if (this.id === "new") {
         entry = {
@@ -76,6 +93,13 @@ export default {
         allowOutsideClick: false,
       });
       Swal.showLoading();
+
+      if (this.file) {
+        const url = await uploadImage(this.file);
+        this.entry.picture = url;
+        this.file = null;
+      }
+
       if (this.entry.id) {
         await this.updateEntry(this.entry);
       } else {
@@ -107,6 +131,22 @@ export default {
         }
       }
     },
+    onSelectedImage($event) {
+      const file = $event.target.files[0];
+      if (!file) {
+        this.file = null;
+        this.localImage = null;
+        return;
+      }
+
+      this.file = file;
+      const fr = new FileReader();
+      fr.onload = () => (this.localImage = fr.result);
+      fr.readAsDataURL(file);
+    },
+    onSelectImage() {
+      this.$refs.selectImage.click();
+    },
   },
   computed: {
     ...mapGetters("journal", ["getEntryById"]),
@@ -123,6 +163,8 @@ export default {
   data() {
     return {
       entry: null,
+      localImage: null,
+      file: null,
     };
   },
   created() {
