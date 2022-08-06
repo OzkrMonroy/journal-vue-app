@@ -7,7 +7,11 @@
         <span class="mx-2 fs-4 fw-light">{{ year }}</span>
       </div>
       <div>
-        <button class="btn btn-danger mx-2">
+        <button
+          class="btn btn-danger mx-2"
+          @click="onDeleteEntry"
+          v-if="entry.id"
+        >
           Delete
           <i class="fa fa-trash-alt"></i>
         </button>
@@ -51,7 +55,7 @@ export default {
     ),
   },
   methods: {
-    ...mapActions("journal", ["updateEntry", "createEntry"]),
+    ...mapActions("journal", ["updateEntry", "createEntry", "deleteEntry"]),
     getEntry() {
       let entry;
       if (this.id === "new") {
@@ -71,6 +75,14 @@ export default {
       } else {
         const id = await this.createEntry(this.entry);
         this.$router.push({ name: "entry", params: { id } });
+      }
+    },
+    async onDeleteEntry() {
+      try {
+        await this.deleteEntry(this.entry.id);
+        this.$router.push({ name: "no-entry" });
+      } catch (error) {
+        console.log({ error }, "An error occured while deleting...");
       }
     },
   },
