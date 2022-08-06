@@ -41,6 +41,7 @@
 import { defineAsyncComponent } from "vue";
 import { mapActions, mapGetters } from "vuex";
 import { getFormattedDate } from "../helpers/getFormattedDate";
+import Swal from "sweetalert2";
 
 export default {
   props: {
@@ -70,19 +71,40 @@ export default {
       this.entry = entry;
     },
     async saveEntry() {
+      new Swal({
+        title: "Wait please...",
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
       if (this.entry.id) {
         await this.updateEntry(this.entry);
       } else {
         const id = await this.createEntry(this.entry);
         this.$router.push({ name: "entry", params: { id } });
       }
+      Swal.fire("Saved!", "The entry has been saved", "success");
     },
     async onDeleteEntry() {
-      try {
-        await this.deleteEntry(this.entry.id);
-        this.$router.push({ name: "no-entry" });
-      } catch (error) {
-        console.log({ error }, "An error occured while deleting...");
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone",
+        showDenyButton: true,
+        confirmButtonText: "Yes, I'm sure",
+        reverseButtons: true,
+      });
+      if (isConfirmed) {
+        new Swal({
+          title: "Wait please...",
+          allowOutsideClick: false,
+        });
+        Swal.showLoading();
+        try {
+          await this.deleteEntry(this.entry.id);
+          this.$router.push({ name: "no-entry" });
+          Swal.fire("Deleted", "", "success");
+        } catch (error) {
+          console.log({ error }, "An error occured while deleting...");
+        }
       }
     },
   },
