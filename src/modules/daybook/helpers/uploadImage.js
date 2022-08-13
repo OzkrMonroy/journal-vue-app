@@ -11,7 +11,6 @@ const uploadImage = async (file) => {
     const url = "https://api.cloudinary.com/v1_1/dxae8onmb/image/upload";
     const { data } = await axios.post(url, formData);
 
-    console.log(data);
     return data.secure_url;
   } catch (error) {
     console.log("An error occurred while uploading the file", { error });
