@@ -89,7 +89,7 @@ export default {
       this.entry = entry;
     },
     async saveEntry() {
-      new Swal({
+      Swal.fire({
         title: "Wait please...",
         allowOutsideClick: false,
       });
@@ -118,7 +118,7 @@ export default {
         reverseButtons: true,
       });
       if (isConfirmed) {
-        new Swal({
+        Swal.fire({
           title: "Wait please...",
           allowOutsideClick: false,
         });
