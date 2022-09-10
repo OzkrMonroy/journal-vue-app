@@ -8,8 +8,14 @@ const useAuth = () => {
     return resp;
   };
 
+  const loginUser = async (credentials) => {
+    const resp = await store.dispatch("auth/loginUser", credentials);
+    return resp;
+  };
+
   return {
     createUser,
+    loginUser,
   };
 };
 
