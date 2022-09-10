@@ -24,6 +24,8 @@ const useAuth = () => {
     checkAuthStatus,
     createUser,
     loginUser,
+    logout: () => store.dispatch("auth/logout"),
+    userName: computed(() => store.getters["auth/currentUserName"]),
   };
 };
 

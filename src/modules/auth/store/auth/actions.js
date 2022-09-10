@@ -64,3 +64,6 @@ export const checkAuthentication = async ({ commit }) => {
     return { ok: false, message: error.response.data.error.message };
   }
 };
+export const logout = ({ commit }) => {
+  commit("logout");
+};
