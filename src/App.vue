@@ -2,6 +2,20 @@
   <router-view />
 </template>
 
+<script>
+import { useAuth } from "./modules/auth/composables";
+
+export default {
+  setup() {
+    const { authStatus, checkAuthStatus } = useAuth();
+    checkAuthStatus();
+    return {
+      authStatus,
+    };
+  },
+};
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

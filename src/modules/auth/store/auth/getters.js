@@ -1,3 +1,3 @@
-export const tempGetter = (state) => {
-  return state.auth;
+export const currentState = (state) => {
+  return state.status;
 };
