@@ -17,13 +17,13 @@ describe("Vuex - Tests for Journal Module", () => {
   let store = createVuexStore(journalState);
 
   beforeAll(async () => {
-    const { data } = await authApi.post(':signInWithPassword', {
-      email: 'oscar@test.com',
-      password: '123456',
+    const { data } = await authApi.post(":signInWithPassword", {
+      email: "test@test.com",
+      password: "123456",
       returnSecureToken: true,
-    })
-    localStorage.setItem('idToken', data.idToken)
-  })
+    });
+    localStorage.setItem("idToken", data.idToken);
+  });
 
   afterEach(() => {
     store = createVuexStore(journalState);
@@ -66,7 +66,6 @@ describe("Vuex - Tests for Journal Module", () => {
       text: "Hola mundo",
     };
     store.commit("journal/addEntry", newEntry);
-    // const storeEntries = store.state.journal.entries;
 
     expect(store.state.journal.entries.length).toBe(3);
     expect(
